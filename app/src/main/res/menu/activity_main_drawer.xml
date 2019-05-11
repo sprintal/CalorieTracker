@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:title="@string/menu_dashboard" />
+        <item
+            android:id="@+id/nav_daily_diet"
+            android:title="@string/menu_daily_diet" />
+        <item
+            android:id="@+id/nav_steps"
+            android:title="@string/menu_steps"/>
+        <item
+            android:id="@+id/nav_calorie_tracker"
+            android:title="@string/menu_calorie_tracker"/>
+        <item
+            android:id="@+id/nav_report"
+            android:title="@string/menu_report"/>
+        <item
+            android:id="@+id/nav_map"
+            android:title="@string/menu_map"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:title="@string/menu_logout"/>
+    </group>
+
+
+</menu>
+
+
