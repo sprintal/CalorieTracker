@@ -2,6 +2,7 @@ package com.kang.calorietracker;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,12 +16,29 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private boolean loginStatus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+        loginStatus = false;
+
+        try {
+            loginStatus = getIntent().getBooleanExtra("loginStatus", false);
+        } catch (Exception e) {
+
+        }
+        if(!loginStatus) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -114,6 +132,7 @@ public class MainActivity extends AppCompatActivity
                 nextFragment = new MapFragment();
                 break;
             case R.id.nav_logout:
+                logout();
                 break;
         }
 
@@ -137,5 +156,13 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logout() {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        Toast toast = Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_LONG);
+        toast.show();
+        finish();
     }
 }
