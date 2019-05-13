@@ -20,6 +20,26 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_drawer" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <Button
+                android:id="@+id/nav_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_logout"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                style="@style/Widget.MaterialComponents.Button.TextButton">
+
+                <!--Here is a container at the bottom of navigation drawer. Place your images here-->
+
+            </Button>
+
+        </RelativeLayout>
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

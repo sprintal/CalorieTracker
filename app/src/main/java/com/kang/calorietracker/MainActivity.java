@@ -2,10 +2,12 @@ package com.kang.calorietracker;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -64,6 +67,14 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, new
                 DashboardFragment()).commit();
+
+        Button logoutButton = findViewById(R.id.nav_logout);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
 
 
     }
@@ -131,9 +142,6 @@ public class MainActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("Map");
                 nextFragment = new MapFragment();
                 break;
-            case R.id.nav_logout:
-                logout();
-                break;
         }
 
 //        if (id == R.id.nav_home) {
@@ -159,10 +167,30 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void logout() {
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(intent);
-        Toast toast = Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_LONG);
-        toast.show();
-        finish();
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Really?");
+        builder.setMessage("You really want to leave us?");
+//        builder.setIcon(R.mipmap.ic_launcher_round);
+        builder.setCancelable(true);
+        builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                Toast toast = Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_LONG);
+                toast.show();
+                finish();
+            }
+        });
+        builder.setPositiveButton("HELL NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }
