@@ -1,6 +1,7 @@
 package com.kang.calorietracker;
 
 import android.app.DatePickerDialog;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.spec.ECField;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,15 +37,17 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import helper.RegisterStatus;
 import helper.User;
 
 public class RegisterActivity extends AppCompatActivity {
     private User user;
-
+    private static final String URL_STR = "http://localhost:8080/CalorieTrackerServer/webresources/restws.credential/register/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getSupportActionBar().setTitle("Registration");
         user = new User();
         setContentView(R.layout.activity_register);
@@ -162,6 +174,25 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        final EditText weightEdit = findViewById(R.id.register_weight);
+        final TextInputLayout weightWrapper = findViewById(R.id.wrapper_weight);
+        weightEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                weightWrapper.setError(null);
+            }
+        });
+
         final EditText addressEdit = findViewById(R.id.register_address);
         final TextInputLayout addressWrapper = findViewById(R.id.wrapper_address);
         addressEdit.addTextChangedListener(new TextWatcher() {
@@ -260,32 +291,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        final EditText weightEdit = findViewById(R.id.register_weight);
-        final TextInputLayout weightWrapper = findViewById(R.id.wrapper_weight);
-        weightEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                weightWrapper.setError(null);
-            }
-        });
-
         final Button registerButton = findViewById(R.id.register);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int checked = 0;
                 final TextView genderWarn = findViewById(R.id.warn_gender);
-                if (user.getGender() == "") {
+                if (user.getUserid().getGender() == "") {
                     genderWarn.setText("Please choose a gender!");
                 }
                 else {
@@ -297,7 +309,7 @@ public class RegisterActivity extends AppCompatActivity {
                     firstNameWrapper.setError("Please enter your first name!");
                 }
                 else {
-                    user.setFirstName(firstName);
+                    user.getUserid().setName(firstName);
                     checked += 1;
                 }
 
@@ -307,12 +319,12 @@ public class RegisterActivity extends AppCompatActivity {
                     surnameWrapper.setError("Please enter your surname!");
                 }
                 else {
-                    user.setSurname(surname);
+                    user.getUserid().setSurname(surname);
                     checked += 1;
                 }
 
                 // Regex reference: https://stackoverflow.com/a/8204716
-                String email = emailEdit.getText().toString().trim();
+                String email = emailEdit.getText().toString().trim().toLowerCase();
                 Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
                 Matcher emailMatcher = emailPattern.matcher(email);
                 if (email.equals("")) {
@@ -322,7 +334,7 @@ public class RegisterActivity extends AppCompatActivity {
                     emailWrapper.setError("Please enter a valid email address!");
                 }
                 else {
-                    user.setEmail(email);
+                    user.getUserid().setEmail(email);
                     checked += 1;
                 }
 
@@ -331,7 +343,7 @@ public class RegisterActivity extends AppCompatActivity {
                     DoBWrapper.setError("Please enter your date of birth!");
                 }
                 else {
-                    user.setDoB(DoB);
+                    user.getUserid().setDob(DoB);
                     checked += 1;
                 }
 
@@ -342,7 +354,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     try {
                         double height = Double.parseDouble(heightStr);
-                        user.setHeight(height);
+                        user.getUserid().setHeight(height);
                         checked += 1;
                     } catch (Exception e) {
                         heightWrapper.setError("Please enter a valid height!");
@@ -356,7 +368,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     try {
                         double weight = Double.parseDouble(weightStr);
-                        user.setWeight(weight);
+                        user.getUserid().setWeight(weight);
                         checked += 1;
                     } catch (Exception e) {
                         weightWrapper.setError("Please enter a valid weight!");
@@ -369,7 +381,7 @@ public class RegisterActivity extends AppCompatActivity {
                     addressWrapper.setError("Please enter your address!");
                 }
                 else {
-                    user.setAddress(address);
+                    user.getUserid().setAddress(address);
                     checked += 1;
                 }
 
@@ -378,7 +390,7 @@ public class RegisterActivity extends AppCompatActivity {
                     postcodeWrapper.setError("Please enter your postcode");
                 }
                 else {
-                    user.setPostcode(postcode);
+                    user.getUserid().setPostcode(postcode);
                     checked += 1;
                 }
 
@@ -389,7 +401,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     try {
                         int stepsPerMile = Integer.parseInt(stepsPerMileStr);
-                        user.setStepsPerMile(stepsPerMile);
+                        user.getUserid().setStepspermile(stepsPerMile);
                         checked += 1;
                     } catch (Exception e) {
                         stepsPerMileWrapper.setError("Please enter a valid number!");
@@ -413,7 +425,7 @@ public class RegisterActivity extends AppCompatActivity {
                     passwordWrapper.setError("Your password is too short, try something longer than 8");
                 }
                 else {
-                    user.setPassword(password);
+                    user.setPasswordhash(password);
                     checked += 1;
                 }
 
@@ -428,14 +440,14 @@ public class RegisterActivity extends AppCompatActivity {
                     checked += 1;
                 }
 
-                if (user.getGender().equals("Male") || user.getGender().equals("Female")) {
+                if (user.getUserid().getGender().equals("Male") || user.getUserid().getGender().equals("Female")) {
                     checked += 1;
                 }
 
                 String levelOfActivityStr = levelOfActivitySpinner.getSelectedItem().toString();
                 int levelOfActivity = Integer.parseInt(levelOfActivityStr);
                 if (levelOfActivity > 0 && levelOfActivity < 6) {
-                    user.setLevelOfActivity(levelOfActivity);
+                    user.getUserid().setLevelofactivity(levelOfActivity);
                     checked += 1;
                 }
                 else {
@@ -443,16 +455,20 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (checked == 14) {
+                    System.out.println("Ready to fire");
                     registerButton.setText("Please wait");
                     registerButton.setEnabled(false);
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            Toast toast = Toast.makeText(RegisterActivity.this, "successful", Toast.LENGTH_LONG);
-                            toast.show();
-
-                        }
-                    }, 2000);
+//                    new Handler().postDelayed(new Runnable() {
+//                        public void run() {
+//                            Toast toast = Toast.makeText(RegisterActivity.this, "successful", Toast.LENGTH_LONG);
+//                            toast.show();
+//
+//                        }
+//                    }, 2000);
 //                    finish();
+                    PostAsyncTask postAsyncTask = new PostAsyncTask();
+                    postAsyncTask.execute(user);
+
                 }
             }
         });
@@ -466,15 +482,57 @@ public class RegisterActivity extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.radio_male:
                 if (checked)
-                    user.setGender("Male");
+                    user.getUserid().setGender("Male");
                 break;
             case R.id.radio_female:
                 if (checked)
-                    user.setGender("Female");
+                    user.getUserid().setGender("Female");
                 break;
         }
         final TextView warnGender = findViewById(R.id.warn_gender);
         warnGender.setText(null);
+    }
+
+    private class PostAsyncTask extends AsyncTask<User, Void, String> {
+        @Override
+        protected String doInBackground(User... params) {
+            String result = RestClient.register(params[0]);
+            System.out.println("In doinbackground");
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            System.out.println(result);
+            Button rButton = findViewById(R.id.register);
+
+            Gson gson = new Gson();
+            if (result.equals("")) {
+                final Toast toast = Toast.makeText(RegisterActivity.this, "Server can't be reached, please check network status!", Toast.LENGTH_LONG);
+                toast.show();
+                rButton.setEnabled(true);
+                return;
+            }
+
+            RegisterStatus registerStatus = gson.fromJson(result, RegisterStatus.class);
+            if (registerStatus.getStatus().equals("successful")) {
+                final Toast toast = Toast.makeText(RegisterActivity.this, "Registration successful, please login!", Toast.LENGTH_LONG);
+                toast.show();
+                finish();
+            }
+            else {
+                if (registerStatus.getInfo().getUsername().equals("exist")) {
+                    TextInputLayout usernameWrapper = findViewById(R.id.wrapper_username);
+                    usernameWrapper.setError("Username exist, try another one!");
+                    }
+                if (registerStatus.getInfo().getEmail().equals("exist")) {
+                    TextInputLayout emailWrapper = findViewById(R.id.wrapper_email);
+                    emailWrapper.setError("Email exist, try another one!");
+                }
+
+                rButton.setEnabled(true);
+            }
+        }
     }
 
 
