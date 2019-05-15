@@ -11,6 +11,8 @@ import helper.User;
 
 public class RestClient {
     private static final String BASE_URL = "http://10.0.2.2:8080/CalorieTrackerServer/webresources/";
+    private static final String FOOD_API_URL = "http://api.nal.usda.gov/ndb/";
+    private static final String FOOD_API_KEY = "nu277bbsmeOiL8nCIVQRn4hSuzcMWCJKOV4O6xgP";
     public static String register(User user) {
         final String methodPath = "restws.credential/register/";
         Gson gson = new Gson();
@@ -46,11 +48,34 @@ public class RestClient {
             }
 
         } catch (Exception e) {
-
-        } finally {
-            //conn.disconnect();
-            return result;
+            e.printStackTrace();
         }
+        return result;
 
+    }
+
+    public static String searchFood(String query) {
+        final String methodPath = "search/?api_key=";
+        final String restOfUrl = "&format=json&sort=n&max=5";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(FOOD_API_URL + methodPath + FOOD_API_KEY + "&query=" + query + restOfUrl);
+            conn = (HttpURLConnection)url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

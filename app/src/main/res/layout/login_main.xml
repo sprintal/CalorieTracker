@@ -25,13 +25,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
-        app:errorEnabled="true">
+        app:errorEnabled="true"
+        app:passwordToggleEnabled="true">
         <EditText
             android:id="@+id/password_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_password"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout

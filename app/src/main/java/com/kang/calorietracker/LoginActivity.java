@@ -16,6 +16,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String test = null;
+        test += "test";
+        System.out.println(test);
+
         getSupportActionBar().setTitle("Log In");
         setContentView(R.layout.activity_login);
         final EditText usernameEdit = findViewById(R.id.username_login);

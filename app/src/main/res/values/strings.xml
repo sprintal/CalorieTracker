@@ -21,8 +21,8 @@
     <string name="hint_first_name">First Name</string>
     <string name="hint_surname">Surname</string>
     <string name="hint_email">Email</string>
-    <string name="hint_height">Height</string>
-    <string name="hint_weight">Weight</string>
+    <string name="hint_height">Height (in cm)</string>
+    <string name="hint_weight">Weight (in kg)</string>
     <string name="hint_address">Address</string>
     <string name="hint_postcode">Postcode</string>
     <string name="hint_level_of_activity">Level of Activity</string>
@@ -37,4 +37,7 @@
     <string name="button_login">Log In</string>
     <string name="button_register">Register</string>
     <string name="button_cancel">Cancel</string>
+
+    <string name="warn_gender_empty">Please choose a gender!</string>
+    <string name="warn_first_name_empty">Please enter your first name!</string>
 </resources>

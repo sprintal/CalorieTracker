@@ -83,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
                 dobPicker.set(Calendar.YEAR, year);
                 dobPicker.set(Calendar.MONTH, month);
                 dobPicker.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String dateFormat = "MM/dd/yyyy";
+                String dateFormat = "MM-dd-yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
                 DoBEdit.setText(sdf.format(dobPicker.getTime()));
             }
@@ -297,8 +297,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int checked = 0;
                 final TextView genderWarn = findViewById(R.id.warn_gender);
-                if (user.getUserid().getGender() == "") {
-                    genderWarn.setText("Please choose a gender!");
+                if (user.getUserid().getGender().equals("")) {
+                    genderWarn.setText(R.string.warn_gender_empty);
                 }
                 else {
                     genderWarn.setText("");
