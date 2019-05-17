@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/food_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="200dp"
+        android:layout_alignParentTop="true"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/food_image"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        >
+        <TextView
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:id="@+id/food_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="oreo"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"/>
+
+        <TextView
+            android:id="@+id/label_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/food_name"
+            android:textStyle="bold"
+            android:text="@string/label_category"/>
+        <TextView
+            android:id="@+id/food_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/food_name"
+            android:layout_toEndOf="@id/label_category"
+            android:text="Genetic"/>
+
+        <TextView
+            android:id="@+id/label_energy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/label_category"
+            android:text="@string/label_energy"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/food_energy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/food_category"
+            android:layout_toEndOf="@id/label_energy"
+            android:text="energy amount"/>
+
+        <TextView
+            android:id="@+id/label_fat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/label_energy"
+            android:text="@string/label_fat"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/food_fat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/food_energy"
+            android:layout_toEndOf="@id/label_fat"
+            android:text="fat amount"/>
+
+        <TextView
+            android:id="@+id/food_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/food_fat" />
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

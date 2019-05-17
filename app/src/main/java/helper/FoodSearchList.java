@@ -15,7 +15,7 @@ public class FoodSearchList {
         public Item[] item;
 
         public class Item {
-            public int offset;
+            public int offset= 0;
             public String group;
             public String name;
             public String ndbno;

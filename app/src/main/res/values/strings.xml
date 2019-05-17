@@ -40,4 +40,10 @@
 
     <string name="warn_gender_empty">Please choose a gender!</string>
     <string name="warn_first_name_empty">Please enter your first name!</string>
+
+    <string name="label_category">Category</string>
+    <string name="label_energy">Energy</string>
+    <string name="label_fat">Fat</string>
+    <string name="label_serving_unit">Serving Unit</string>
+    <string name="label_serving_amount">Serving Amount</string>
 </resources>
