@@ -1,14 +1,16 @@
 package com.kang.calorietracker;
 
 import android.app.Fragment;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -17,30 +19,53 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Toolbar;
 
+import com.google.gson.Gson;
 import com.kang.calorietracker.data.DailyGoal;
+import com.kang.calorietracker.helper.Credential;
+import com.kang.calorietracker.helper.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class DashboardFragment extends Fragment {
     View vDashboard;
-    int goal = 0;
+    HashMap goals;
     Calendar now;
+    Integer goal = 0;
     String choice = "GAIN";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         vDashboard = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
+        //final String username = "Kang";
         final DailyGoal dailyGoal = (DailyGoal) getActivity().getApplication();
-        goal = dailyGoal.getGoal();
+        //final LoginUser loginCredential = (LoginUser) getActivity().getApplication();
+        final TextView welcomeText = vDashboard.findViewById(R.id.text_welcome);
+        SharedPreferences user = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+        String userJson = user.getString("user", null);
+        Gson gson = new Gson();
+        final User loginUser = gson.fromJson(userJson, User.class);
+        try {
+            welcomeText.setText("Welcome, " + loginUser.getName() + "!");
+
+        goals = dailyGoal.getUserGoals();
         Calendar date = dailyGoal.getDate();
         now = Calendar.getInstance();
         if (date.get(Calendar.YEAR) != now.get(Calendar.YEAR) || date.get(Calendar.MONTH) != now.get(Calendar.MONTH) || date.get(Calendar.DAY_OF_MONTH) != now.get(Calendar.DAY_OF_MONTH)) {
             goal = 0;
+        }
+        else if (goals.get(loginUser.email) == null) {
+            goal = 0;
+        }
+        else {
+            goal = (Integer) goals.get(loginUser.email);
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         final TextClock clock = vDashboard.findViewById(R.id.clock);
         clock.setFormat12Hour("yyyy-MM-dd hh:mm:ss aa");
@@ -103,7 +128,9 @@ public class DashboardFragment extends Fragment {
                         }
                         now =Calendar.getInstance();
                         goalText.setText(String.valueOf(goal));
-                        dailyGoal.setGoal(goal);
+                        goals = dailyGoal.getUserGoals();
+                        goals.put(loginUser.email, goal);
+                        dailyGoal.setUserGoals(goals);
                         dailyGoal.setDate(now);
                         dialog.dismiss();
                     }

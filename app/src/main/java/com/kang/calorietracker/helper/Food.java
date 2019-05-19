@@ -1,4 +1,4 @@
-package helper;
+package com.kang.calorietracker.helper;
 
 public class Food {
     public String name;
@@ -7,4 +7,5 @@ public class Food {
     public double calorieamount;
     public double servingamount;
     public String servingunit;
+    public int id;
 }

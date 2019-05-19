@@ -7,4 +7,10 @@
     <color name="colorAccent">#03a9f4</color>
     <!--<color name="colorAccent">#4caf50</color>-->
     <color name="colorError">#dd2c00</color>
+
+    <color name="green">#76ff03</color>
+    <color name="red">#e64a19</color>
+    <color name="blue">#03a9f4</color>
+    <color name="yellow">#ffff00</color>
+    <color name="black">#000000</color>
 </resources>

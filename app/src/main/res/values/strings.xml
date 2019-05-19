@@ -30,6 +30,13 @@
     <string name="hint_repeat_password">Repeat Password</string>
     <string name="hint_gender">Gender</string>
     <string name="hint_dob">Date of Birth</string>
+    <string name="hint_food_name">Food Name</string>
+    <string name="hint_diet_amount">Enter Amount</string>
+    <string name="hint_add_steps">Enter Number of Steps</string>
+    <string name="hint_pie_chart">Select A Date</string>
+    <string name="hint_pie_date">Select A Date</string>
+    <string name="hint_bar_chart_begin">Select The Beginning Date</string>
+    <string name="hint_bar_chart_end">Select The End Date</string>
 
     <string name="radio_male">Male</string>
     <string name="radio_female">Female</string>
@@ -37,6 +44,14 @@
     <string name="button_login">Log In</string>
     <string name="button_register">Register</string>
     <string name="button_cancel">Cancel</string>
+    <string name="button_search">Search</string>
+    <string name="button_add_diet">Add Consumption</string>
+    <string name="button_add_food">Add New Food</string>
+    <string name="button_add_cancel">Cancel</string>
+    <string name="button_add_steps">Add</string>
+    <string name="button_cancel_steps_edit">Cancel</string>
+    <string name="button_save_steps_edit">Save</string>
+    <string name="button_generate">Generate</string>
 
     <string name="warn_gender_empty">Please choose a gender!</string>
     <string name="warn_first_name_empty">Please enter your first name!</string>
@@ -46,4 +61,12 @@
     <string name="label_fat">Fat</string>
     <string name="label_serving_unit">Serving Unit</string>
     <string name="label_serving_amount">Serving Amount</string>
+    
+    <string name="text_goal">Today\'s Goal</string>
+    <string name="text_steps">Total Steps</string>
+    <string name="text_consumed">Total Consumed</string>
+    <string name="text_burned">Total Burned</string>
+    <string name="text_pie_chart">Daily Pie Chart Report</string>
+    <string name="text_bar_chart">Period Bar Chart Report</string>
+
 </resources>

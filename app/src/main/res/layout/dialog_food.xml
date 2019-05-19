@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/food_name"
             android:layout_toEndOf="@id/label_category"
-            android:text="Genetic"/>
+            android:layout_marginStart="@dimen/activity_horizontal_margin"/>
 
         <TextView
             android:id="@+id/label_energy"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/food_category"
             android:layout_toEndOf="@id/label_energy"
-            android:text="energy amount"/>
+            android:layout_marginStart="@dimen/activity_horizontal_margin"/>
 
         <TextView
             android:id="@+id/label_fat"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/food_energy"
             android:layout_toEndOf="@id/label_fat"
-            android:text="fat amount"/>
+            android:layout_marginStart="@dimen/activity_horizontal_margin"/>
 
         <TextView
             android:id="@+id/food_description"

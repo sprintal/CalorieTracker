@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/activity_horizontal_margin">
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/wrapper_diet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true"
+        android:layout_alignParentTop="true">
+        <EditText
+            android:id="@+id/edit_diet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_food_name"
+            android:inputType="text"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_diet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_below="@+id/wrapper_diet">
+        <Button
+            android:id="@+id/button_add_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_add_cancel"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            style="@style/Widget.MaterialComponents.Button.TextButton" />
+        <Button
+            android:id="@+id/button_diet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_search"
+            android:layout_marginStart="@dimen/activity_horizontal_margin" />
+    </LinearLayout>
+
+
+    <ListView
+        android:id="@+id/list_diet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_diet"
+        android:divider="@color/colorAccent"
+        android:dividerHeight="2dp"
+        android:scrollbars="vertical"/>
+
+    </RelativeLayout>

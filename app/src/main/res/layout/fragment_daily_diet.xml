@@ -1,52 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+
+<!--<android.support.v4.widget.SwipeRefreshLayout-->
+    <!--android:id="@+id/swipe_refresh"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+<RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/activity_horizontal_margin">
-    <!--<android.support.v4.widget.SwipeRefreshLayout-->
-        <!--android:id="@+id/swipe_refresh"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-        <!--<ListView-->
-            <!--android:id="@+id/list_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:gravity="center" />-->
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/wrapper_diet"
+    <Spinner
+        android:id="@+id/spinner_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:errorEnabled="true"
-        android:layout_alignParentTop="true">
-        <EditText
-        android:id="@+id/edit_diet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="ENTER ME"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/button_diet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="click me"
-        android:layout_below="@+id/wrapper_diet"
+        android:layout_alignParentTop="true"
         />
+    <Spinner
+        android:id="@+id/spinner_food"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_category"/>
+
+    <TextView
+        android:id="@+id/text_food_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_food"/>
+
+    <TextView
+        android:id="@+id/text_food_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_food_name"/>
+
     <!--<TextView-->
-        <!--android:id="@+id/text_diet"-->
+        <!--android:id="@+id/text_food_serving_amount"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/button_diet"/>-->
-    <ListView
-        android:id="@+id/list_diet"
+        <!--android:layout_below="@+id/text_food_calorie"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/text_food_serving_unit"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/text_food_serving_amount"/>-->
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/wrapper_food_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button_diet"
-        android:divider="@color/colorAccent"
-        android:dividerHeight="2dp"
-        android:scrollbars="vertical"/>
+        android:layout_below="@+id/text_food_info"
+        app:errorEnabled="true"
+        android:hint="@string/hint_diet_amount">
+        <EditText
+            android:id="@+id/edit_diet_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"/>
+    </android.support.design.widget.TextInputLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wrapper_food_amount"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/button_add_diet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:text="@string/button_add_diet"/>
+        <Button
+            android:id="@+id/button_add_new_food"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:text="@string/button_add_food"/>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_refresh"/>
 </RelativeLayout>

@@ -1,12 +1,19 @@
-package helper;
+package com.kang.calorietracker.data;
 
-public class User {
-    public String getUsername() {
-        return username;
+import android.app.Application;
+
+public class LoginUser extends Application {
+    private int id;
+    private String passwordhash;
+    private Userid userid;
+    private String username;
+
+    public int getId() {
+        return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPasswordhash() {
@@ -25,25 +32,27 @@ public class User {
         this.userid = userid;
     }
 
-    public String username = "";
-    public String passwordhash = "";
-    public Userid userid = new Userid();
+    public String getUsername() {
+        return username;
+    }
 
-    public static class Userid {
-        public String address = "";
-        public String dob = "";
-        public String email = "";
-        public String gender = "";
-        public double height = 0;
-        public double weight = 0;
-        public int levelofactivity = 0;
-        public String name = "";
-        public String postcode = "";
-        public int stepspermile = 0;
-        public String surname = "";
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-        public Userid() {
-        }
+    public class Userid {
+        private String address;
+        private String dob;
+        private String email;
+        private String gender;
+        private double height;
+        private int id;
+        private int levelofactivity;
+        private String name;
+        private String postcode;
+        private int stepspermile;
+        private String surname;
+        private double weight;
 
         public String getAddress() {
             return address;
@@ -85,12 +94,12 @@ public class User {
             this.height = height;
         }
 
-        public double getWeight() {
-            return weight;
+        public int getId() {
+            return id;
         }
 
-        public void setWeight(double weight) {
-            this.weight = weight;
+        public void setId(int id) {
+            this.id = id;
         }
 
         public int getLevelofactivity() {
@@ -132,8 +141,18 @@ public class User {
         public void setSurname(String surname) {
             this.surname = surname;
         }
+
+        public double getWeight() {
+            return weight;
+        }
+
+        public void setWeight(double weight) {
+            this.weight = weight;
+        }
     }
 
-
-
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 }

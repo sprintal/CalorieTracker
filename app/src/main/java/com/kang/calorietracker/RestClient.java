@@ -6,8 +6,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-import helper.Food;
-import helper.User;
+import com.kang.calorietracker.helper.Consumption;
+import com.kang.calorietracker.helper.Food;
+import com.kang.calorietracker.helper.Credential;
 
 public class RestClient {
     private static final String BASE_URL = "http://10.0.2.2:8080/CalorieTrackerServer/webresources/";
@@ -18,10 +19,10 @@ public class RestClient {
     private static final String SEARCH_API_CX = "013948155761704756549:rxkjvvneyxo";
     private static final String SEARCH_API_KEY = "AIzaSyC--qMr8pfwFuz_OJ11ZQij0dslIQg8kyw";
 
-    public static String register(User user) {
+    public static String register(Credential credential) {
         final String methodPath = "restws.credential/register/";
         Gson gson = new Gson();
-        final String json = gson.toJson(user);
+        final String json = gson.toJson(credential);
         System.out.println(json);
 
         URL url;
@@ -136,6 +137,273 @@ public class RestClient {
             while (inStream.hasNextLine()) {
                 result += inStream.nextLine();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static String getFoodList() {
+        final String methodPath = "restws.food/";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+
+        try {
+            url = new URL(BASE_URL + methodPath);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String postConsumption(Consumption consumption) {
+        final String methodPath = "restws.consumption/";
+        Gson gson = new Gson();
+        final String json = gson.toJson(consumption);
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(BASE_URL + methodPath);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+            conn.setFixedLengthStreamingMode(json.getBytes().length);
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStream out = conn.getOutputStream();
+            out.write(json.getBytes());
+            out.flush();
+            out.close();
+            if (conn.getResponseCode() == 204) {
+                result = "successful";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static String getTotalConsumed(String userid, String date) {
+        final String methodPath = "restws.consumption/getTotalConsumed/";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(BASE_URL + methodPath + userid + "/" + date);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String getBurnedPerStep(String userid) {
+        final String methodPath = "restws.users/getBurnedPerStep/";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(BASE_URL + methodPath + userid);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String getBurnedAtRest(String userid) {
+        final String methodPath = "restws.users/getTotalBurnedAtRest/";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(BASE_URL + methodPath + userid);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String getDailyReport(String userid, String date) {
+        final String methodPath = "restws.report/getDailyReport/";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(BASE_URL + methodPath + userid + "/" + date);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String getPeriodReport(String userid, String beginDate, String endDate) {
+        final String methodPath = "restws.report/getPeriodReport/";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(BASE_URL + methodPath + userid + "/" + beginDate + "/" + endDate);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String getGeoLocation(String address) {
+        final String path = "http://dev.virtualearth.net/REST/v1/Locations/?maxResults=1&key=Ak-KSJrwTetpJ1QkwhVcHCSKgT6gTDTQ-qDWVmCm4qWQhNLm1-YNgd3wmAsRDRQf&query=";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(path + address.replaceAll("\\s", "%20"));
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String getParks(Double lat, Double lng) {
+        final String path = "https://api.foursquare.com/v2/venues/explore?client_id=UPVICUBKVESJXZUQGC10PATORMM3HQ5U2JHZFAVSKOP42OIN&client_secret=GDFOSUNLSBWTA4DMFFA1CBCCV1A2SZCT4RYNA5L2IJP1YEYK&v=20180323&categoryId=4bf58dd8d48988d163941735&query=park&radius=5000&";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(path + "ll=" + lat + "," + lng);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String login(String username, String passwordhash) {
+        final String methodPath = "restws.credential/login/";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(BASE_URL + methodPath + username + "/" + passwordhash);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            while (inStream.hasNextLine()) {
+                result += inStream.nextLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "";
+        }
+        return result;
+    }
+
+    public static String postReport(String report) {
+        final String methodPath = "restws.report/";
+        URL url;
+        HttpURLConnection conn;
+        String result = "";
+        try {
+            url = new URL(BASE_URL + methodPath);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setFixedLengthStreamingMode(report.getBytes().length);
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStream out = conn.getOutputStream();
+            out.write(report.getBytes());
+            out.flush();
+            out.close();
+            if (conn.getResponseCode() == 204) {
+                result = "successful";
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

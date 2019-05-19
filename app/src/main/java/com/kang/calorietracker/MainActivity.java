@@ -1,10 +1,15 @@
 package com.kang.calorietracker;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
+
 import android.app.FragmentManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -17,13 +22,21 @@ import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
+/*
+Main Activity, managing fragments
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private boolean loginStatus;
+    private AlarmManager alarmManager;
+    private Intent alarmIntent;
+    private PendingIntent pendingIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -44,17 +57,28 @@ public class MainActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
 
+        // Set daily auto update
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.setTimeInMillis(System.currentTimeMillis());
+        long systemTime = System.currentTimeMillis();
+        mCalendar.setTimeInMillis(System.currentTimeMillis());
+        mCalendar.setTimeZone(TimeZone.getTimeZone("GMT+10"));
+        mCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        mCalendar.set(Calendar.MINUTE, 59);
+        mCalendar.set(Calendar.SECOND, 0);
+        mCalendar.set(Calendar.MILLISECOND, 0);
+        long selectTime = mCalendar.getTimeInMillis();
+        if(systemTime > selectTime) {
+            mCalendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmIntent = new Intent(this, ScheduledIntentService.class);
+        pendingIntent = PendingIntent.getService(this, 0, alarmIntent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(),1000 * 60 * 60 * 24, pendingIntent);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -88,28 +112,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
+    // Routing between fragments
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -142,20 +145,6 @@ public class MainActivity extends AppCompatActivity
                 nextFragment = new MapFragment();
                 break;
         }
-
-//        if (id == R.id.nav_home) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_tools) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
         FragmentManager fragmentManager = getFragmentManager();
         if(nextFragment != null) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, nextFragment).commit();
@@ -165,11 +154,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    // Go back to Login Activity
     private void logout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Really?");
         builder.setMessage("You really want to leave us?");
-//        builder.setIcon(R.mipmap.ic_launcher_round);
+
         builder.setCancelable(true);
         builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
             @Override

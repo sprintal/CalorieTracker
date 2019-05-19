@@ -1,4 +1,4 @@
-package helper;
+package com.kang.calorietracker.helper;
 
 public class FoodSearchListEdamam {
     public Hints[] hints;

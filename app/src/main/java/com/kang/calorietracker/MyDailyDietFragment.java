@@ -1,19 +1,13 @@
 package com.kang.calorietracker;
 
 import android.app.Fragment;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,230 +15,187 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.kang.calorietracker.helper.Consumption;
+import com.kang.calorietracker.helper.Food;
+import com.kang.calorietracker.helper.User;
 
-import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
-
-import helper.Food;
-import helper.FoodSearchList;
-import helper.FoodSearchListEdamam;
-import helper.GoogleSearchResult;
-
+import java.util.Set;
 
 public class MyDailyDietFragment extends Fragment {
     View vDailyDiet;
-    SwipeRefreshLayout swipeRefreshLayout;
-    List<String> list = new ArrayList<>();
-    ArrayAdapter adapter;
-//    FoodSearchList foodSearchList;
-    FoodSearchListEdamam foodSearchListEdamam;
-    FoodSearchListEdamam.Hints[] foodList;
-    FoodSearchListEdamam.Hints.Food food;
-    TextView des;
-    ImageView img;
+    HashMap<String, List<Food>> categoryFood = new HashMap<>();
+    Spinner categorySpinner;
+    Spinner foodSpinner;
+    Button addDietButton;
+    FloatingActionButton refreshButton;
+    Set<String> categories;
+    ArrayAdapter<Object> categorySpinnerAdapter;
+    ArrayAdapter<String> foodSpinnerAdapter;
+    List<Food> foods;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         vDailyDiet = inflater.inflate(R.layout.fragment_daily_diet, container, false);
+        final TextView foodNameText = vDailyDiet.findViewById(R.id.text_food_name);
+        final TextView foodInfoText = vDailyDiet.findViewById(R.id.text_food_info);
+        refreshButton = vDailyDiet.findViewById(R.id.button_refresh);
+        final Button addFoodButton = vDailyDiet.findViewById(R.id.button_add_new_food);
+        addDietButton = vDailyDiet.findViewById(R.id.button_add_diet);
 
-//        swipeRefreshLayout = vDailyDiet.findViewById(R.id.swipe_refresh);
-//        swipeRefreshLayout.setOnRefreshListener(this);
-//        swipeRefreshLayout.setProgressViewOffset(true, 0, 100);
-//        swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
-//        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(android.R.color.holo_green_dark),
-//                getResources().getColor(android.R.color.holo_red_dark),
-//                getResources().getColor(android.R.color.holo_blue_dark),
-//                getResources().getColor(android.R.color.holo_orange_dark));
-//        ListView mListView = vDailyDiet.findViewById(R.id.list_view);
-//
-//        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getData());
-//        mListView.setAdapter(adapter);
-        final Button dietButton = vDailyDiet.findViewById(R.id.button_diet);
-        final EditText dietEdit = vDailyDiet.findViewById(R.id.edit_diet);
-        final TextInputLayout dietWrapper = vDailyDiet.findViewById(R.id.wrapper_diet);
-        final ListView foodSearchResultList = vDailyDiet.findViewById(R.id.list_diet);
-        dietEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                dietWrapper.setError(null);
-            }
-        });
-
-        foodSearchResultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println(position);
-                food = foodSearchListEdamam.hints[position].food;
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setView(R.layout.dialog_food);
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Food foodObj = new Food();
-                        foodObj.name = food.label;
-                        foodObj.category = food.category;
-                        foodObj.calorieamount = food.nutrients.ENERC_KCAL;
-                        foodObj.fat = food.nutrients.FAT;
-                        foodObj.servingamount = 100;
-                        foodObj.servingunit = "grams";
-                        PostAsyncTask postAsyncTask = new PostAsyncTask();
-                        postAsyncTask.execute(foodObj);
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                GoogleSearchAsyncTask googleSearchAsyncTask = new GoogleSearchAsyncTask();
-                googleSearchAsyncTask.execute(food.label);
-                final TextView foodName = dialog.findViewById(R.id.food_name);
-                final TextView foodCategory = dialog.findViewById(R.id.food_category);
-                final TextView foodEnergy = dialog.findViewById(R.id.food_energy);
-                final TextView food_fat = dialog.findViewById(R.id.food_fat);
-                final TextView food_description = dialog.findViewById(R.id.food_description);
-                final ImageView food_image = dialog.findViewById(R.id.food_image);
-                des = food_description;
-                img = food_image;
-                foodName.setText(food.label);
-                foodCategory.setText(food.category);
-                foodEnergy.setText(String.valueOf(food.nutrients.ENERC_KCAL));
-                food_fat.setText(String.valueOf(food.nutrients.FAT));
-                //food_description.setText(description);
-
-            }
-        });
-        dietButton.setOnClickListener(new View.OnClickListener() {
+        addFoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String query = dietEdit.getText().toString().trim();
-                if (query.equals("")) {
-                    dietWrapper.setError("Please enter something!");
-                }
-                else {
-                    FoodSearchAsyncTask foodSearchAsyncTask = new FoodSearchAsyncTask();
-                    foodSearchAsyncTask.execute(query);
-                }
-                System.out.println("query: " + query);
+                Intent intent = new Intent(getActivity(), AddFoodActivity.class);
+                startActivity(intent);
             }
         });
 
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshButton.setEnabled(false);
+                GetFoodAsyncTask getFoodAsyncTask = new GetFoodAsyncTask();
+                getFoodAsyncTask.execute();
+            }
+        });
 
+        SharedPreferences user = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+        String userJson = user.getString("user", null);
+        final Gson gson = new Gson();
+        final User loginUser = gson.fromJson(userJson, User.class);
 
+        GetFoodAsyncTask getFoodAsyncTask = new GetFoodAsyncTask();
+        getFoodAsyncTask.execute();
+        categorySpinner = vDailyDiet.findViewById(R.id.spinner_category);
+        foodSpinner = vDailyDiet.findViewById(R.id.spinner_food);
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String category = categorySpinner.getSelectedItem().toString();
+                foods = categoryFood.get(category);
+                List<String> foodNames = new ArrayList<>();
+                for (int i = 0; i < foods.size(); i++) {
+                    foodNames.add(foods.get(i).name);
+                }
+                foodSpinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, foodNames);
+                foodSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                foodSpinner.setAdapter(foodSpinnerAdapter);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        foodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Food food = foods.get(position);
+                foodNameText.setText(food.name);
+                foodInfoText.setText("Containing " + food.calorieamount + " calories / " + food.servingamount + " "  + food.servingunit);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        final EditText consumeAmount = vDailyDiet.findViewById(R.id.edit_diet_amount);
+        final TextInputLayout consumeAmountWrapper = vDailyDiet.findViewById(R.id.wrapper_food_amount);
+
+        addDietButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (consumeAmount.getText().toString().trim().equals("")) {
+                    consumeAmountWrapper.setError("Please enter amount!");
+                }
+                else if (Double.valueOf(consumeAmount.getText().toString().trim()) <= 0) {
+                    consumeAmountWrapper.setError("Please enter a positive amount!");
+                }
+                else {
+                    Food food = foods.get(foodSpinner.getSelectedItemPosition());
+                    double amount = Double.valueOf(consumeAmount.getText().toString().trim());
+                    Consumption consumption = new Consumption();
+                    consumption.foodid = food;
+                    consumption.quantity = amount;
+                    consumption.userid = loginUser;
+                    Calendar now = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String nowStr = sdf.format(now.getTime());
+                    consumption.date = nowStr;
+                    PostConsumptionAsyncTask postConsumptionAsyncTask = new PostConsumptionAsyncTask();
+                    postConsumptionAsyncTask.execute(consumption);
+                    addDietButton.setEnabled(false);
+                    addDietButton.setText("Please Wait");
+                }
+            }
+        });
         return vDailyDiet;
     }
 
-    private class FoodSearchAsyncTask extends AsyncTask<String, Void, String> {
+    private class GetFoodAsyncTask extends AsyncTask<Void, Void, String> {
         @Override
-        protected String doInBackground (String...params) {
-            return RestClient.searchFood(params[0]);
+        protected String doInBackground (Void...params) {
+            return RestClient.getFoodList();
         }
 
         @Override
-        protected void onPostExecute (String result){
-            // TextView resultTextView = vDailyDiet.findViewById(R.id.text_diet);
-            ListView resultList = vDailyDiet.findViewById((R.id.list_diet));
+        protected void onPostExecute (String result) {
+            System.out.println(result);
             Gson gson = new Gson();
-            foodSearchListEdamam = gson.fromJson(result, FoodSearchListEdamam.class);
-                if (foodSearchListEdamam.hints.length == 0) {
-                Toast toast = Toast.makeText(getActivity(), "No result found, please try another keyword", Toast.LENGTH_LONG);
+            try {
+                Food[] foodList = gson.fromJson(result, Food[].class);
+                categoryFood = new HashMap<>();
+                for (Food item : foodList) {
+                    List<Food> foods;
+                    if (categoryFood.get(item.category) == null) {
+                        foods = new ArrayList<>();
+                    } else {
+                        foods = categoryFood.get(item.category);
+                    }
+                    foods.add(item);
+                    categoryFood.put(item.category, foods);
+                }
+                categories = categoryFood.keySet();
+                categorySpinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, categories.toArray());
+                categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categorySpinner.setAdapter(categorySpinnerAdapter);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast toast = Toast.makeText(getActivity(), "Can't get food list from server, please check internet connection and try again!", Toast.LENGTH_LONG);
                 toast.show();
-                return;
             }
-
-            System.out.println(foodSearchListEdamam.hints[0].food.category);
-//            resultTextView.setText(result);
-            foodList = foodSearchListEdamam.hints;
-            List<String> aList = new ArrayList<>();
-            for (FoodSearchListEdamam.Hints item:foodList) {
-                aList.add(item.food.label + "\nCategory: " + item.food.category);
-            }
-            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, aList);
-            resultList.setAdapter(adapter);
+            refreshButton.setEnabled(true);
         }
-
     }
 
-    private class PostAsyncTask extends AsyncTask<Food, Void, String> {
+    private class PostConsumptionAsyncTask extends  AsyncTask<Consumption, Void, String> {
         @Override
-        protected String doInBackground(Food...params) {
-            String result = RestClient.addFood(params[0]);
-            return result;
+        protected String doInBackground (Consumption...params) {
+            return RestClient.postConsumption(params[0]);
         }
+
         @Override
-        protected void onPostExecute(String result) {
-            Toast toast = Toast.makeText(getActivity(), result, Toast.LENGTH_LONG);
+        protected void onPostExecute (String result) {
+            Toast toast;
+            if (result.equals("successful")) {
+                toast = Toast.makeText(getActivity(), "Successfully added!", Toast.LENGTH_LONG);
+            }
+            else {
+                toast = Toast.makeText(getActivity(), "Successfully failed, please check internet connection and try again!", Toast.LENGTH_LONG);
+            }
+            addDietButton.setText(R.string.button_add_diet);
+            addDietButton.setEnabled(true);
             toast.show();
         }
     }
-
-    private class GoogleSearchAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String...params) {
-            String result = RestClient.googleSearch(params[0]);
-            return result;
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-            Gson gson = new Gson();
-            GoogleSearchResult googleSearchResult = gson.fromJson(result, GoogleSearchResult.class);
-            final TextView foodDescription = getView().findViewById(R.id.food_description);
-            String description = "";
-            String imageLink = "";
-                    description = googleSearchResult.items[0].pagemap.product[0].description;
-                    imageLink = googleSearchResult.items[0].pagemap.product[0].image;
-            if (!imageLink.equals("")) {
-                DownloadImageTask downloadImageTask = new DownloadImageTask(img);
-                downloadImageTask.execute(imageLink);
-            }
-            des.setText(description);
-            } catch (Exception e) { }
-        }
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
-
 }
 
 
