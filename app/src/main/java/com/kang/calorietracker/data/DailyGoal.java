@@ -9,8 +9,6 @@ public class DailyGoal extends Application {
     private Calendar date;
     private HashMap<String, Integer> userGoals;
 
-
-
     public Calendar getDate() {
         return date;
     }

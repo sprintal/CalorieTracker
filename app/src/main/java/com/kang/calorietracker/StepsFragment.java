@@ -76,6 +76,7 @@ public class StepsFragment extends Fragment {
 //            }
 //        });
 
+        // When clicked, check input then insert new steps entry to SQLite
         final Button addStepsButton = vSteps.findViewById(R.id.button_add_steps);
         addStepsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +98,7 @@ public class StepsFragment extends Fragment {
             }
         });
 
+        // When clicked, check input, then open a dialog to edit the steps
         stepsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

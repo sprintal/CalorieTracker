@@ -14,10 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.kang.calorietracker.helper.Parks;
-
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 public class LoginActivity extends AppCompatActivity {
@@ -25,10 +21,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        String test = null;
-        test += "test";
-        System.out.println(test);
 
         getSupportActionBar().setTitle("Log In");
         setContentView(R.layout.activity_login);
@@ -65,7 +57,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,18 +76,11 @@ public class LoginActivity extends AppCompatActivity {
                         System.out.println("Hash : " + passwordhash);
                         LogInAsyncTask logInAsyncTask = new LogInAsyncTask();
                         logInAsyncTask.execute(username, passwordhash);
-
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast toast = Toast.makeText(LoginActivity.this, "Login failed!", Toast.LENGTH_LONG);
                         toast.show();
                     }
-
-
-                    String user = "{\"address\":\"29 Clifton Street, Caulfield East, VIC, Australia\",\"dob\":\"1995-06-16\",\"email\":\"kmen0004@student.monash.edu\",\"gender\":\"Male\",\"height\":178.0,\"id\":1,\"levelofactivity\":2,\"name\":\"Kang\",\"postcode\":\"3145\",\"stepspermile\":2200,\"surname\":\"Meng\",\"weight\":68.0}";
-                    Gson gson = new Gson();
-
-
                 }
             }
         });
@@ -109,6 +93,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*
+    Call login method from server, try to authenticate
+     */
     private class LogInAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String...params) {
@@ -133,8 +121,9 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
                 }
             }
-        }
+    }
 
+    // Convert byte[] to hex string
     public static String bytes2Hex(byte[] bts) {
         String des = "";
         String tmp = null;

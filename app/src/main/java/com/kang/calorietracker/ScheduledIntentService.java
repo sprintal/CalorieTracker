@@ -22,9 +22,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+/*
+Alarm Task
+ */
 public class ScheduledIntentService extends IntentService {
     HashMap goals;
-    int totalSteps;
+    int totalSteps = 0;
     StepsDatabase db = null;
     User loginUser;
     Calendar now;
@@ -129,60 +132,61 @@ public class ScheduledIntentService extends IntentService {
 
         }
 
-        private class GetTotalBurnedAtRestAsyncTask extends AsyncTask<String, Void, String> {
-            @Override
-            protected String doInBackground(String... params) {
-                return RestClient.getBurnedAtRest(params[0]);
-            }
-            @Override
-            protected void onPostExecute(String result) {
-                Gson gson = new Gson();
-                try {
-                    TotalBurnedAtRest totalBurnedAtRest = gson.fromJson(result, TotalBurnedAtRest.class);
-                    totalBurned += totalBurnedAtRest.totalburnedatrest;
-                    report.burned = totalBurned;
-                    String json = gson.toJson(report);
-                    PostReportAsyncTask postReportAsyncTask = new PostReportAsyncTask();
-                    postReportAsyncTask.execute(json);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+    }
+    private class GetTotalBurnedAtRestAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            return RestClient.getBurnedAtRest(params[0]);
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Gson gson = new Gson();
+            try {
+                TotalBurnedAtRest totalBurnedAtRest = gson.fromJson(result, TotalBurnedAtRest.class);
+                totalBurned += totalBurnedAtRest.totalburnedatrest;
+                report.burned = totalBurned;
+                String json = gson.toJson(report);
+                PostReportAsyncTask postReportAsyncTask = new PostReportAsyncTask();
+                postReportAsyncTask.execute(json);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+    }
 
-        private class PostReportAsyncTask extends AsyncTask<String, Void, String> {
-            @Override
-            protected String doInBackground(String... params) {
-                return RestClient.postReport(params[0]);
+    private class PostReportAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            return RestClient.postReport(params[0]);
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("")) {
             }
-            @Override
-            protected void onPostExecute(String result) {
-                if(result.equals("")) {
-                }
-                else {
-                    DeleteAllDatabase deleteAllDatabase = new DeleteAllDatabase();
-                    deleteAllDatabase.execute();
-                }
+            else {
+                DeleteAllDatabase deleteAllDatabase = new DeleteAllDatabase();
+                deleteAllDatabase.execute();
             }
         }
+    }
 
-        private class DeleteAllDatabase extends AsyncTask<Void, Void, String> {
-            @Override
-            protected String doInBackground(Void...params) {
-                String result;
-                try {
-                    db.stepsDao().deleteAll();
-                    result = "Deleted";
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    result = "Failed";
-                }
-                return result;
+    private class DeleteAllDatabase extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void...params) {
+            String result;
+            try {
+                db.stepsDao().deleteAll();
+                result = "Deleted";
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = "Failed";
             }
-            @Override
-            protected void onPostExecute(String result) {
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
 
-            }
         }
     }
 }

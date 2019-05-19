@@ -172,6 +172,9 @@ public class ReportFragment extends Fragment {
         return vReport;
     }
 
+    /*
+    GET a daily report from server and generate pie chart
+     */
     private class GetDailyReportsAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground (String...params) {
@@ -236,6 +239,9 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    /*
+    GET a list of reports and generate bar chart
+     */
     private class GetPeriodReportAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground (String...params) {

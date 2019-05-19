@@ -84,6 +84,9 @@ public class CalorieTrackerFragment extends Fragment {
         return vCalorieTracker;
     }
 
+    /*
+    GET total steps today
+     */
     private class GetDatabaseAsyncTask extends AsyncTask<String, Void, List<Steps>> {
         @Override
         protected List<Steps> doInBackground(String... params) {
@@ -103,6 +106,9 @@ public class CalorieTrackerFragment extends Fragment {
         }
     }
 
+    /*
+    GET total consumed today
+     */
     private class GetTotalConsumedAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -124,6 +130,9 @@ public class CalorieTrackerFragment extends Fragment {
         }
     }
 
+    /*
+    GET burned per step
+     */
     private class GetBurnedPerStepAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -147,6 +156,9 @@ public class CalorieTrackerFragment extends Fragment {
         }
     }
 
+    /*
+    GET total burned at rest
+     */
     private class GetTotalBurnedAtRestAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {

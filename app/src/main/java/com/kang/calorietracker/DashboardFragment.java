@@ -68,7 +68,7 @@ public class DashboardFragment extends Fragment {
             e.printStackTrace();
         }
         final TextClock clock = vDashboard.findViewById(R.id.clock);
-        clock.setFormat12Hour("yyyy-MM-dd hh:mm:ss aa");
+        clock.setFormat24Hour("yyyy-MM-dd hh:mm:ss aa");
         final Button goalButton = vDashboard.findViewById(R.id.button_goal);
         final TextView goalText = vDashboard.findViewById(R.id.text_goal);
         goalText.setText(String.valueOf(goal));

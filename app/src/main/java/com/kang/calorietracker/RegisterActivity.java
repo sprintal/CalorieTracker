@@ -35,7 +35,6 @@ import com.kang.calorietracker.helper.Credential;
 
 public class RegisterActivity extends AppCompatActivity {
     private Credential credential;
-    private static final String URL_STR = "http://localhost:8080/CalorieTrackerServer/webresources/restws.credential/register/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -459,22 +458,11 @@ public class RegisterActivity extends AppCompatActivity {
                     System.out.println("Ready to fire");
                     registerButton.setText("Please wait");
                     registerButton.setEnabled(false);
-//                    new Handler().postDelayed(new Runnable() {
-//                        public void run() {
-//                            Toast toast = Toast.makeText(RegisterActivity.this, "successful", Toast.LENGTH_LONG);
-//                            toast.show();
-//
-//                        }
-//                    }, 2000);
-//                    finish();
                     PostAsyncTask postAsyncTask = new PostAsyncTask();
                     postAsyncTask.execute(credential);
-
                 }
             }
         });
-
-
     }
 
 
@@ -535,6 +523,8 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
     }
+
+    // Convert byte[] to hex string
     public static String bytes2Hex(byte[] bts) {
         String des = "";
         String tmp = null;
